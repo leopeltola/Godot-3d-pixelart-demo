@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://djc2wirwhg3g"]
+
+[ext_resource type="PackedScene" uid="uid://bljy5ug0s2n26" path="res://camera.tscn" id="1_nnx1f"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_gg7it"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uyf7y"]
+albedo_color = Color(0.8, 0.176471, 0.227451, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rhvpp"]
+
+[sub_resource type="Environment" id="Environment_t4b23"]
+background_mode = 1
+background_color = Color(0.317647, 0.541176, 0.713726, 1)
+ambient_light_source = 3
+ambient_light_sky_contribution = 0.2
+reflected_light_source = 2
+tonemap_mode = 2
+tonemap_exposure = 1.34
+ssil_enabled = true
+sdfgi_enabled = true
+sdfgi_cascades = 8
+
+[node name="Demo" type="Node3D"]
+
+[node name="Camera" parent="." instance=ExtResource("1_nnx1f")]
+transform = Transform3D(1, 0, 0, 0, 0.852065, 0.523436, 0, -0.523436, 0.852065, -2.38419e-07, 2.29815, 3.32988)
+
+[node name="Cube" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.907066, 0, -0.420988, 0, 1, 0, 0.420988, 0, 0.907066, 0, 0, 0)
+mesh = SubResource("BoxMesh_gg7it")
+surface_material_override/0 = SubResource("StandardMaterial3D_uyf7y")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.492433, -0.592603, 0.637441, -0.114819, 0.681762, 0.722507, -0.862743, -0.428977, 0.26768, 0, 2.58754, 0)
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.479686, 0)
+mesh = SubResource("PlaneMesh_rhvpp")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_t4b23")

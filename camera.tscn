@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bljy5ug0s2n26"]
+
+[ext_resource type="Shader" path="res://pixelart_outline.gdshader" id="1_k0ihu"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_57txa"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kier4"]
+render_priority = 0
+shader = ExtResource("1_k0ihu")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/distance_falloff = 1.0
+shader_parameter/smoothing_cutoff = 0.1
+shader_parameter/smoothing_max = 0.1
+
+[node name="Camera" type="Camera3D"]
+current = true
+size = 7.52446
+near = 0.001
+
+[node name="Postprocess" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.873369)
+mesh = SubResource("PlaneMesh_57txa")
+surface_material_override/0 = SubResource("ShaderMaterial_kier4")
