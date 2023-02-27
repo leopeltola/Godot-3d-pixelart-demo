@@ -31,31 +31,32 @@ float abs_diff(float depth_a, float depth_b){
 	return abs(abs(depth_a)-abs(depth_b));
 }
 
+
+
 void fragment() {
 	float d = linear_depth(DEPTH_TEXTURE, SCREEN_UV, INV_PROJECTION_MATRIX);
 	
-	// calculate the offset size of a single pixel
+	// calculate the screen uv offset size of a single pixel
 	vec2 screen_size = vec2(textureSize(SCREEN_TEXTURE, 1));
-	
 	vec2 pixel_size = (distance_falloff / d) / vec2(screen_size.x, screen_size.y);
-	ALBEDO = vec3(d);
 	
 	float du = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0.0, pixel_size.y), INV_PROJECTION_MATRIX);
 	float dd = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0.0, -pixel_size.y), INV_PROJECTION_MATRIX);
 	float dr = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(pixel_size.x, 0.0), INV_PROJECTION_MATRIX);
 	float dl = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(-pixel_size.x, 0.0), INV_PROJECTION_MATRIX);
 	
-	// combine all the abs differences in depth of neighbors
-	float diff = 
-		abs_diff(d, du) +
-		abs_diff(d, dl) +
-		abs_diff(d, dd) +
-		abs_diff(d, dr) 
-	;
+	// combine all the differences in depth of neighbors
+	float diff = 0.0;
+	diff += clamp(du - d, 0., 1.);
+	diff += clamp(dd - d, 0., 1.);
+	diff += clamp(dr - d, 0., 1.);
+	diff += clamp(dl - d, 0., 1.);
+	diff = smoothstep(0.15, 0.7, diff);
 	
 	vec3 original = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
 	vec3 outline = mix(outline_color.rgb, original, .5);
-	ALBEDO = mix(original, outline_color.rgb, diff);
+	ALBEDO = mix(original, outline.rgb, diff);
+	
 //	ALBEDO = vec3(diff);
 	
 //	ALPHA = smoothstep(smoothing_cutoff, max(smoothing_cutoff, smoothing_max), ALPHA);
