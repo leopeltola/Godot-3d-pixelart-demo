@@ -1,43 +1,143 @@
-[gd_scene load_steps=6 format=3 uid="uid://djc2wirwhg3g"]
+[gd_scene load_steps=11 format=3 uid="uid://djc2wirwhg3g"]
 
 [ext_resource type="PackedScene" uid="uid://bljy5ug0s2n26" path="res://camera.tscn" id="1_nnx1f"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_gg7it"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uyf7y"]
-albedo_color = Color(0.8, 0.176471, 0.227451, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0a1b"]
+albedo_color = Color(0.294118, 0.356863, 0.439216, 1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_rhvpp"]
+[sub_resource type="TorusMesh" id="TorusMesh_5f5u1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lr1hu"]
+diffuse_mode = 3
+specular_mode = 1
+albedo_color = Color(0.14902, 0.517647, 1, 1)
+emission = Color(0.831373, 0.156863, 0.270588, 1)
+emission_energy_multiplier = 5.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_sfxtu"]
+size = Vector3(10, 1, 10)
 
 [sub_resource type="Environment" id="Environment_t4b23"]
 background_mode = 1
 background_color = Color(0.317647, 0.541176, 0.713726, 1)
 ambient_light_source = 3
-ambient_light_sky_contribution = 0.2
+ambient_light_sky_contribution = 0.32
 reflected_light_source = 2
 tonemap_mode = 2
-tonemap_exposure = 1.34
+ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
-sdfgi_cascades = 8
+
+[sub_resource type="Animation" id="Animation_b55y7"]
+resource_name = "loop"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Torus:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 12.5664, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 10)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Torus:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 10)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Torus:rotation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 6.28319, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 10)
+}
+
+[sub_resource type="Animation" id="Animation_clmft"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Torus:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Torus:rotation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Torus:rotation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(6.28319, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y7lvy"]
+_data = {
+"RESET": SubResource("Animation_clmft"),
+"loop": SubResource("Animation_b55y7")
+}
 
 [node name="Demo" type="Node3D"]
 
 [node name="Camera" parent="." instance=ExtResource("1_nnx1f")]
-transform = Transform3D(1, 0, 0, 0, 0.852065, 0.523436, 0, -0.523436, 0.852065, -2.38419e-07, 2.29815, 3.32988)
+transform = Transform3D(1, 0, 0, 0, 0.878284, 0.47814, 0, -0.47814, 0.878284, -2.38419e-07, 2.53078, 4.03603)
 
 [node name="Cube" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.907066, 0, -0.420988, 0, 1, 0, 0.420988, 0, 0.907066, 0, 0, 0)
 mesh = SubResource("BoxMesh_gg7it")
-surface_material_override/0 = SubResource("StandardMaterial3D_uyf7y")
+surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
+
+[node name="Torus" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.7, -1.22392e-07, 0, 1.22392e-07, 0.7, 0, 0, 0, 0.7, 0, 1.23979, 0)
+mesh = SubResource("TorusMesh_5f5u1")
+surface_material_override/0 = SubResource("StandardMaterial3D_lr1hu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.492433, -0.592603, 0.637441, -0.114819, 0.681762, 0.722507, -0.862743, -0.428977, 0.26768, 0, 2.58754, 0)
 shadow_enabled = true
 
 [node name="Floor" type="MeshInstance3D" parent="."]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -0.479686, 0)
-mesh = SubResource("PlaneMesh_rhvpp")
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -2.98063, 0)
+mesh = SubResource("BoxMesh_sfxtu")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_t4b23")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "loop"
+libraries = {
+"": SubResource("AnimationLibrary_y7lvy")
+}

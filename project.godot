@@ -21,6 +21,7 @@ window/size/viewport_width=240
 window/size/viewport_height=135
 window/size/window_width_override=960
 window/size/window_height_override=540
+window/vsync/vsync_mode=0
 window/stretch/mode="viewport"
 
 [rendering]
