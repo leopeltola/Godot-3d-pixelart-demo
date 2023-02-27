@@ -153,8 +153,6 @@ void fragment() {
 //	ALBEDO = vec3(combinedOutline);
 	
 //	Coloring based on the outlines
-	
-	
 	vec3 original = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
 	vec3 highlightColor = mix(original, vec3(1.), .03);
 	vec3 shadowColor = mix(original, vec3(0.), .4);

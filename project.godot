@@ -13,6 +13,7 @@ config_version=5
 config/name="3D Pixelart Demo"
 run/main_scene="res://demo.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
+run/frame_delay_msec=41
 config/icon="res://icon.svg"
 
 [display]
@@ -21,13 +22,11 @@ window/size/viewport_width=240
 window/size/viewport_height=135
 window/size/window_width_override=960
 window/size/window_height_override=540
-window/vsync/vsync_mode=0
 window/stretch/mode="viewport"
+window/stretch/aspect="expand"
 
 [rendering]
 
-lights_and_shadows/directional_shadow/size=16384
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
 lights_and_shadows/directional_shadow/16_bits=false
-lights_and_shadows/positional_shadow/soft_shadow_filter_quality=3
-lights_and_shadows/positional_shadow/atlas_16_bits=false
+lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
