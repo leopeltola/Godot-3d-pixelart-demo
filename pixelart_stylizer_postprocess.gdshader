@@ -1,6 +1,8 @@
 shader_type spatial;
 render_mode unshaded;
 
+// MIT License. Made by Leo Peltola
+// Inspired by https://threejs.org/examples/webgl_postprocessing_pixel.html
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
@@ -12,22 +14,15 @@ uniform float highlight_strength : hint_range(0.0, 1.0, 0.01) = 0.1;
 uniform vec3 highlight_color : source_color = vec3(1.);
 uniform vec3 shadow_color : source_color = vec3(0.0);
 
-uniform float distance_falloff : hint_range(0, 5) = 1;
-uniform float smoothing_cutoff : hint_range(0, 1) = 0.1;
-uniform float smoothing_max : hint_range(0, 1) = 0.1;
+varying mat4 model_view_matrix;
 
-varying flat mat4 model_view_matrix;
 
-void vertex(){
-    model_view_matrix = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], MODEL_MATRIX[3]);
-}
-
-float linear_depth(in sampler2D depth_texture, in vec2 screen_uv, in mat4 inv_projection_matrix) {
+float getDepth(vec2 screen_uv, sampler2D depth_texture, mat4 inv_projection_matrix) {
 //	Credit: https://godotshaders.com/shader/depth-modulated-pixel-outline-in-screen-space/
 	float raw_depth = texture(depth_texture, screen_uv)[0];
 	vec3 normalized_device_coordinates = vec3(screen_uv * 2.0 - 1.0, raw_depth);
-    vec4 view_space = inv_projection_matrix * vec4(normalized_device_coordinates, 1.0);
-	view_space.xyz /= view_space.w;
+    vec4 view_space = inv_projection_matrix * vec4(normalized_device_coordinates, 1.0);	
+	view_space.xyz /= view_space.w;	
 	return -view_space.z;
 }
 
@@ -38,10 +33,9 @@ vec3 getPos(float depth, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm){
 }
 
 vec3 computeNormalImproved( sampler2D depth_tx, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm, vec2 iResolution) {
+//	Credit: https://www.reddit.com/r/godot/comments/v70p2k/improved_normal_from_depth/
     vec2 e = vec2(1./iResolution);
-//    float c0 = texture(depth_tx,suv).r;
     float c0 = texture(depth_tx, suv).r;
-//    float l2 = texture(depth_tx,suv-vec2(2,0)*e).r;
     float l2 = texture(depth_tx, suv-vec2(2,0)*e).r;
     float r1 = texture(depth_tx, suv+vec2(1,0)*e).r;
     float l1 = texture(depth_tx, suv-vec2(1,0)*e).r;
@@ -66,7 +60,6 @@ vec3 computeNormalImproved( sampler2D depth_tx, mat4 mvm, mat4 ipm, vec2 suv, ma
     return normalize(cross(dpdx,dpdy));
 }
 
-
 float normalIndicator(vec3 normalEdgeBias, vec3 baseNormal, vec3 newNormal, float depth_diff) {
 	float normalDiff = dot(baseNormal - newNormal, normalEdgeBias);
 	float normalIndicator = clamp(smoothstep(-.01, .01, normalDiff), 0.0, 1.0);
@@ -75,17 +68,21 @@ float normalIndicator(vec3 normalEdgeBias, vec3 baseNormal, vec3 newNormal, floa
 	return (1.0 - dot(baseNormal, newNormal)) * depthIndicator * normalIndicator;
 }
 
+void vertex(){
+    model_view_matrix = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], MODEL_MATRIX[3]);
+}
+
 void fragment() {
 	vec2 e = vec2(1./VIEWPORT_SIZE.xy);
 	
 //	Shadows
 	float depth_diff = 0.0;
 	if (shadows_enabled) {
-		float depth = linear_depth(DEPTH_TEXTURE, SCREEN_UV, INV_PROJECTION_MATRIX);
-		float du = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0., -1.)*e, INV_PROJECTION_MATRIX);
-		float dr = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(1., 0.)*e, INV_PROJECTION_MATRIX);
-		float dd = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0., 1.)*e, INV_PROJECTION_MATRIX);
-		float dl = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(-1., 0.)*e, INV_PROJECTION_MATRIX);
+		float depth = getDepth(SCREEN_UV, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float du = getDepth(SCREEN_UV+vec2(0., -1.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float dr = getDepth(SCREEN_UV+vec2(1., 0.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float dd = getDepth(SCREEN_UV+vec2(0., 1.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float dl = getDepth(SCREEN_UV+vec2(-1., 0.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
 		depth_diff += clamp(du - depth, 0., 1.);
 		depth_diff += clamp(dd - depth, 0., 1.);
 		depth_diff += clamp(dr - depth, 0., 1.);
@@ -111,8 +108,8 @@ void fragment() {
 	
 	
 	vec3 original_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
-	vec3 final_highlight_color = mix(original_color, vec3(1.), highlight_strength);
-	vec3 final_shadow_color = mix(original_color, vec3(0.), shadow_strength);
+	vec3 final_highlight_color = mix(original_color, highlight_color, highlight_strength);
+	vec3 final_shadow_color = mix(original_color, shadow_color, shadow_strength);
 	vec3 final = original_color;
 	if (highlights_enabled) {
 		final = mix(final, final_highlight_color, normal_diff);

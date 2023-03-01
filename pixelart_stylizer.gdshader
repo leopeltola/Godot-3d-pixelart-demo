@@ -1,30 +1,29 @@
 shader_type spatial;
 render_mode unshaded;
 
-uniform sampler2D DEPTH_TEXTURE: hint_depth_texture, filter_nearest;
-uniform sampler2D SCREEN_TEXTURE: hint_screen_texture, filter_nearest;
+// MIT License. Made by Leo Peltola
+// Inspired by https://threejs.org/examples/webgl_postprocessing_pixel.html
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_nearest;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_nearest;
 
 uniform bool shadows_enabled = true;
 uniform bool highlights_enabled = true;
 uniform float shadow_strength : hint_range(0.0, 1.0, 0.01) = 0.4;
 uniform float highlight_strength : hint_range(0.0, 1.0, 0.01) = 0.1;
-uniform float depth_smooth_low : hint_range(0.0, 1.0, 0.01) = 0.2;
-uniform float depth_smooth_high : hint_range(0.0, 1.0, 0.01) = 0.7;
+uniform vec3 highlight_color : source_color = vec3(1.);
+uniform vec3 shadow_color : source_color = vec3(0.0);
 
 varying mat4 model_view_matrix;
 
-float linear_depth(in sampler2D depth_texture, in vec2 screen_uv, in mat4 inv_projection_matrix){
+
+float getDepth(vec2 screen_uv, sampler2D depth_texture, mat4 inv_projection_matrix) {
 //	Credit: https://godotshaders.com/shader/depth-modulated-pixel-outline-in-screen-space/
 	float raw_depth = texture(depth_texture, screen_uv)[0];
 	vec3 normalized_device_coordinates = vec3(screen_uv * 2.0 - 1.0, raw_depth);
     vec4 view_space = inv_projection_matrix * vec4(normalized_device_coordinates, 1.0);	
 	view_space.xyz /= view_space.w;	
 	return -view_space.z;
-}
-
-float getDepth(vec2 screen_uv, sampler2D depth_texture, mat4 inv_projection_matrix) {
-	float ld = linear_depth(depth_texture, screen_uv, inv_projection_matrix);
-	return ld;
 }
 
 vec3 getPos(float depth, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm) {
@@ -34,8 +33,8 @@ vec3 getPos(float depth, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm) {
 }
 
 vec3 computeNormalImproved( sampler2D depth_tx, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm, vec2 iResolution) {
+//	Credit: https://www.reddit.com/r/godot/comments/v70p2k/improved_normal_from_depth/
     vec2 e = vec2(1./iResolution);
-//    float c0 = texture(depth_tx,suv).r;
     float c0 = texture(depth_tx, suv).r;
     float l2 = texture(depth_tx, suv-vec2(2,0)*e).r;
     float r1 = texture(depth_tx, suv+vec2(1,0)*e).r;
@@ -88,7 +87,7 @@ void fragment() {
 		depth_diff += clamp(dr - depth, 0., 1.);
 		depth_diff += clamp(dd - depth, 0., 1.);
 		depth_diff += clamp(dl - depth, 0., 1.);
-		depth_diff = smoothstep(depth_smooth_low, depth_smooth_high, depth_diff);
+		depth_diff = smoothstep(.26, .77, depth_diff);
 	}
 	
 //	Normals
@@ -110,18 +109,18 @@ void fragment() {
 	
 	
 	vec3 original_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
-	vec3 highlight_color = mix(original_color, vec3(1.), highlight_strength);
-	vec3 shadow_color = mix(original_color, vec3(0.), shadow_strength);
+	vec3 final_highlight_color = mix(original_color, highlight_color, highlight_strength);
+	vec3 final_shadow_color = mix(original_color, shadow_color, shadow_strength);
 	vec3 final = original_color;
 	if (highlights_enabled) {
-		final = mix(final, highlight_color, normal_diff);
+		final = mix(final, final_highlight_color, normal_diff);
 	}
 	if (shadows_enabled) {
-		final = mix(final, shadow_color, depth_diff);
+		final = mix(final, final_shadow_color, depth_diff);
 	}
 	ALBEDO = final;
 	
 	float alpha_mask = depth_diff * float(shadows_enabled) + normal_diff * float(highlights_enabled);
-	ALPHA = clamp((alpha_mask) * 5., 0., 1.);
+	ALPHA = clamp((alpha_mask) * 10., 0., 1.);
 	
 }

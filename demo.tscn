@@ -1,12 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://djc2wirwhg3g"]
+[gd_scene load_steps=16 format=3 uid="uid://djc2wirwhg3g"]
 
 [ext_resource type="PackedScene" uid="uid://cuh1yaoty6gvf" path="res://camera.tscn" id="1_nnx1f"]
 [ext_resource type="Shader" path="res://pixelart_stylizer.gdshader" id="2_w500p"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_gg7it"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0a1b"]
-albedo_color = Color(0.294118, 0.356863, 0.439216, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_trpqm"]
 render_priority = 0
@@ -15,12 +12,15 @@ shader_parameter/shadows_enabled = true
 shader_parameter/highlights_enabled = true
 shader_parameter/shadow_strength = 0.4
 shader_parameter/highlight_strength = 0.1
-shader_parameter/depth_smooth_low = 0.26
-shader_parameter/depth_smooth_high = 0.77
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l7ldl"]
 next_pass = SubResource("ShaderMaterial_trpqm")
 albedo_color = Color(0.678431, 0.592157, 0.435294, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0a1b"]
+albedo_color = Color(0.294118, 0.356863, 0.439216, 1)
 
 [sub_resource type="TorusMesh" id="TorusMesh_5f5u1"]
 
@@ -41,16 +41,12 @@ grow_amount = 0.359
 [sub_resource type="BoxMesh" id="BoxMesh_sfxtu"]
 size = Vector3(10, 1, 10)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g7ivp"]
-albedo_color = Color(0.576471, 0.588235, 0.243137, 1)
-
 [sub_resource type="Environment" id="Environment_t4b23"]
 background_mode = 1
 background_color = Color(0.317647, 0.541176, 0.713726, 1)
 ambient_light_source = 3
 ambient_light_color = Color(0.607843, 0.756863, 0.92549, 1)
 ambient_light_sky_contribution = 0.17
-reflected_light_source = 2
 tonemap_mode = 2
 sdfgi_min_cell_size = 0.4
 sdfgi_cascade0_distance = 25.6
@@ -61,6 +57,7 @@ adjustment_saturation = 0.01
 
 [sub_resource type="Animation" id="Animation_clmft"]
 length = 0.001
+loop_mode = 2
 tracks/0/type = "bezier"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -144,31 +141,6 @@ _data = {
 [node name="Camera" parent="." instance=ExtResource("1_nnx1f")]
 transform = Transform3D(1, 0, 0, 0, 0.878284, 0.47814, 0, -0.47814, 0.878284, -2.38419e-07, 2.53078, 4.03603)
 
-[node name="Cube" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.907066, 0, -0.420988, 0, 1, 0, 0.420988, 0, 0.907066, 0, 0, 0)
-mesh = SubResource("BoxMesh_gg7it")
-surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
-
-[node name="ShaderTest" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.953853, 0, 0.300273, 0, 1, 0, -0.300273, 0, 0.953853, 3.02932, -0.433242, -2.41707)
-mesh = SubResource("BoxMesh_gg7it")
-surface_material_override/0 = SubResource("StandardMaterial3D_l7ldl")
-
-[node name="Cube2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.17919, 0, -0.547284, 0, 0.2, 0, 0.547284, 0, 1.17919, 0, -0.21636, 0)
-mesh = SubResource("BoxMesh_gg7it")
-surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
-
-[node name="Cube3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.45131, 0, -0.673581, 0, 0.2, 0, 0.673581, 0, 1.45131, 0, -0.38876, 0)
-mesh = SubResource("BoxMesh_gg7it")
-surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
-
-[node name="Torus" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.0469222, -0.698364, 0.00928309, 0.0198189, -0.0106316, -0.699639, 0.698144, -0.0466353, 0.0204852, 0, 1.22187, 0)
-mesh = SubResource("TorusMesh_5f5u1")
-surface_material_override/0 = SubResource("StandardMaterial3D_lr1hu")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.687757, -0.308438, -0.657158, 0.482257, -0.482504, 0.731176, -0.542604, -0.81979, -0.183099, 0, 2.58754, 0)
 shadow_enabled = true
@@ -176,27 +148,30 @@ directional_shadow_mode = 1
 directional_shadow_split_1 = 0.032
 directional_shadow_split_3 = 0.54
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(0.554651, -0.783736, 0.279502, 0.0485123, 0.365793, 0.929431, -0.830668, -0.50195, 0.240908, 1.79858, 4.14143, 1.27593)
-visible = false
-light_color = Color(0.909804, 0.701961, 0.658824, 1)
-light_energy = 4.879
-light_indirect_energy = 3.586
-shadow_enabled = true
-spot_range = 11.0277
-spot_angle = 26.505
-spot_angle_attenuation = 0.0824701
+[node name="ObjectShadedCube" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.953853, 0, 0.300273, 0, 1, 0, -0.300273, 0, 0.953853, 3.02932, -0.433242, -2.41707)
+mesh = SubResource("BoxMesh_gg7it")
+surface_material_override/0 = SubResource("StandardMaterial3D_l7ldl")
+
+[node name="Cube" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.907066, 0, -0.420988, 0, 1, 0, 0.420988, 0, 0.907066, 0, 0, 0)
+mesh = SubResource("BoxMesh_gg7it")
+surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
+
+[node name="Torus" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.7, -3.12647e-06, 0, 3.12647e-06, 0.7, 0, 0, 0, 0.7, 0, 1.44235, 0)
+mesh = SubResource("TorusMesh_5f5u1")
+surface_material_override/0 = SubResource("StandardMaterial3D_lr1hu")
 
 [node name="Floor" type="MeshInstance3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -2.98063, 0)
 mesh = SubResource("BoxMesh_sfxtu")
-surface_material_override/0 = SubResource("StandardMaterial3D_g7ivp")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_t4b23")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-playback_process_mode = 0
+autoplay = "loop"
 libraries = {
 "": SubResource("AnimationLibrary_y7lvy")
 }
