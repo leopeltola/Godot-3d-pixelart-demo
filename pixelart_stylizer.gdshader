@@ -75,41 +75,43 @@ void vertex(){
 
 void fragment() {
 	vec2 e = vec2(1./VIEWPORT_SIZE.xy);
-	float depth_here = getDepth(SCREEN_UV, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
 	
+//	Shadows
 	float depth_diff = 0.;
-	float du = getDepth(SCREEN_UV+vec2(0., -1.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
-	float dr = getDepth(SCREEN_UV+vec2(1., 0.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
-	float dd = getDepth(SCREEN_UV+vec2(0., 1.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
-	float dl = getDepth(SCREEN_UV+vec2(-1., 0.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
-	depth_diff += clamp(du - depth_here, 0., 1.);
-	depth_diff += clamp(dr - depth_here, 0., 1.);
-	depth_diff += clamp(dd - depth_here, 0., 1.);
-	depth_diff += clamp(dl - depth_here, 0., 1.);
-	depth_diff = smoothstep(depth_smooth_low, depth_smooth_high, depth_diff);
-//	ALBEDO = vec3(depth_diff);
+	if (shadows_enabled) {
+		float depth = getDepth(SCREEN_UV, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float du = getDepth(SCREEN_UV+vec2(0., -1.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float dr = getDepth(SCREEN_UV+vec2(1., 0.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float dd = getDepth(SCREEN_UV+vec2(0., 1.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		float dl = getDepth(SCREEN_UV+vec2(-1., 0.)*e, DEPTH_TEXTURE, INV_PROJECTION_MATRIX);
+		depth_diff += clamp(du - depth, 0., 1.);
+		depth_diff += clamp(dr - depth, 0., 1.);
+		depth_diff += clamp(dd - depth, 0., 1.);
+		depth_diff += clamp(dl - depth, 0., 1.);
+		depth_diff = smoothstep(depth_smooth_low, depth_smooth_high, depth_diff);
+	}
 	
-	// Normals
-	vec3 normal = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-	vec3 nu = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(0., -1.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-	vec3 nr = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(1., 0.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-	vec3 nd = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(0., 1.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-	vec3 nl = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(-1., -1.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-	vec3 normalEdgeBias = vec3(1., 1., 1.);
+//	Normals
 	float normal_diff = 0.;
-	normal_diff += normalIndicator(normalEdgeBias, normal, nu, depth_diff);
-	normal_diff += normalIndicator(normalEdgeBias, normal, nr, depth_diff);
-	normal_diff += normalIndicator(normalEdgeBias, normal, nd, depth_diff);
-	normal_diff += normalIndicator(normalEdgeBias, normal, nl, depth_diff);
-	normal_diff /= 4.;
-	normal_diff = smoothstep(0.1, 0.3, normal_diff);
+	if (highlights_enabled) {
+		vec3 normal = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
+		vec3 nu = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(0., -1.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
+		vec3 nr = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(1., 0.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
+		vec3 nd = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(0., 1.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
+		vec3 nl = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(-1., -1.)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
+		vec3 normalEdgeBias = vec3(1., 1., 1.);
+		normal_diff += normalIndicator(normalEdgeBias, normal, nu, depth_diff);
+		normal_diff += normalIndicator(normalEdgeBias, normal, nr, depth_diff);
+		normal_diff += normalIndicator(normalEdgeBias, normal, nd, depth_diff);
+		normal_diff += normalIndicator(normalEdgeBias, normal, nl, depth_diff);
+		normal_diff /= 4.;
+		normal_diff = smoothstep(0.1, 0.3, normal_diff);
+	}
 	
-//	ALBEDO = vec3(normal_diff);
 	
 	vec3 original_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
 	vec3 highlight_color = mix(original_color, vec3(1.), highlight_strength);
 	vec3 shadow_color = mix(original_color, vec3(0.), shadow_strength);
-	
 	vec3 final = original_color;
 	if (highlights_enabled) {
 		final = mix(final, highlight_color, normal_diff);

@@ -8,7 +8,12 @@ size = Vector2(10, 10)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hpojt"]
 render_priority = 0
 shader = ExtResource("1_f284h")
-shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/shadows_enabled = true
+shader_parameter/highlights_enabled = true
+shader_parameter/shadow_strength = 0.4
+shader_parameter/highlight_strength = 0.1
+shader_parameter/highlight_color = Color(1, 1, 1, 1)
+shader_parameter/shadow_color = Color(0, 0, 0, 1)
 shader_parameter/distance_falloff = 1.0
 shader_parameter/smoothing_cutoff = 0.1
 shader_parameter/smoothing_max = 0.1
@@ -21,6 +26,5 @@ near = 0.001
 
 [node name="Postprocess" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.873369)
-visible = false
 mesh = SubResource("PlaneMesh_57txa")
 surface_material_override/0 = SubResource("ShaderMaterial_hpojt")

@@ -12,7 +12,7 @@ albedo_color = Color(0.294118, 0.356863, 0.439216, 1)
 render_priority = 0
 shader = ExtResource("2_w500p")
 shader_parameter/shadows_enabled = true
-shader_parameter/highlights_enabled = false
+shader_parameter/highlights_enabled = true
 shader_parameter/shadow_strength = 0.4
 shader_parameter/highlight_strength = 0.1
 shader_parameter/depth_smooth_low = 0.26
@@ -165,7 +165,7 @@ mesh = SubResource("BoxMesh_gg7it")
 surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
 
 [node name="Torus" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.7, -3.12647e-06, 0, 3.12647e-06, 0.7, 0, 0, 0, 0.7, 0, 1.23979, 0)
+transform = Transform3D(-0.0469222, -0.698364, 0.00928309, 0.0198189, -0.0106316, -0.699639, 0.698144, -0.0466353, 0.0204852, 0, 1.22187, 0)
 mesh = SubResource("TorusMesh_5f5u1")
 surface_material_override/0 = SubResource("StandardMaterial3D_lr1hu")
 
@@ -196,7 +196,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_g7ivp")
 environment = SubResource("Environment_t4b23")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "loop"
+playback_process_mode = 0
 libraries = {
 "": SubResource("AnimationLibrary_y7lvy")
 }
