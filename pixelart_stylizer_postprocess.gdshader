@@ -13,12 +13,7 @@ uniform float smoothing_max : hint_range(0, 1) = 0.1;
 varying flat mat4 model_view_matrix;
 
 void vertex(){
-    // plane face camera (comment it, to use below)
     model_view_matrix = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], MODEL_MATRIX[3]);
-    
-    // plane stay on place (uncommend only one of it (top^ or bottom this)
-    //model_view_matrix = CAMERA_MATRIX*MODELVIEW_MATRIX;
-    
 }
 
 float linear_depth(in sampler2D depth_texture, in vec2 screen_uv, in mat4 inv_projection_matrix){
@@ -160,5 +155,4 @@ void fragment() {
 	final = mix(final, highlightColor, normalOutline);
 	final = mix(final, shadowColor, depthOutline);
 	ALBEDO = final;
-	
 }

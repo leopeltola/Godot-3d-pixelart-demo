@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://bljy5ug0s2n26"]
+[gd_scene load_steps=4 format=3 uid="uid://cuh1yaoty6gvf"]
 
-[ext_resource type="Shader" path="res://pixelart_outline.gdshader" id="1_k0ihu"]
+[ext_resource type="Shader" path="res://pixelart_stylizer_postprocess.gdshader" id="1_f284h"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_57txa"]
 size = Vector2(10, 10)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hpojt"]
 render_priority = 0
-shader = ExtResource("1_k0ihu")
+shader = ExtResource("1_f284h")
 shader_parameter/outline_color = Color(0, 0, 0, 1)
 shader_parameter/distance_falloff = 1.0
 shader_parameter/smoothing_cutoff = 0.1
@@ -21,5 +21,6 @@ near = 0.001
 
 [node name="Postprocess" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.873369)
+visible = false
 mesh = SubResource("PlaneMesh_57txa")
 surface_material_override/0 = SubResource("ShaderMaterial_hpojt")
