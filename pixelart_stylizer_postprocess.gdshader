@@ -6,6 +6,7 @@ render_mode unshaded;
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+uniform sampler2D NORMAL_TEXTURE : hint_normal_roughness_texture, filter_linear_mipmap;
 
 uniform bool shadows_enabled = true;
 uniform bool highlights_enabled = true;
@@ -93,11 +94,11 @@ void fragment() {
 //	Highlights
 	float normal_diff = 0.;
 	if (highlights_enabled) {
-		vec3 normal = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-		vec3 nu = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(0, 1)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-		vec3 nr = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(1, 0)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-		vec3 nd = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(0, -1)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
-		vec3 nl = computeNormalImproved(DEPTH_TEXTURE, model_view_matrix, INV_PROJECTION_MATRIX, SCREEN_UV+vec2(-1, 0)*e, MODEL_MATRIX, VIEW_MATRIX, VIEWPORT_SIZE.xy);
+		vec3 normal = texture(NORMAL_TEXTURE, SCREEN_UV).xyz;
+		vec3 nu = texture(NORMAL_TEXTURE, SCREEN_UV+vec2(0, 1)*e).xyz;
+		vec3 nr =  texture(NORMAL_TEXTURE, SCREEN_UV+vec2(1, 0)*e).xyz;
+		vec3 nd = texture(NORMAL_TEXTURE, SCREEN_UV+vec2(0, -1)*e).xyz;
+		vec3 nl =  texture(NORMAL_TEXTURE, SCREEN_UV+vec2(-1, 0)*e).xyz;
 		vec3 normal_edge_bias = vec3(1., 1., 1.);
 		normal_diff += normalIndicator(normal_edge_bias, normal, nu, depth_diff);
 		normal_diff += normalIndicator(normal_edge_bias, normal, nr, depth_diff);
