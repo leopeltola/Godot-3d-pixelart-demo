@@ -12,23 +12,6 @@ Inspired by [this by Kody King](https://threejs.org/examples/webgl_postprocessin
 1. Post-processing shader that affects everything on the screen
 2. Object-specific shader. This is best used as second pass on top of a base material - see demo
 
-## Bugs
-
-The shaders are nowhere near perfect. Most problems stem from calculating the normals.
-
-I might try fixing these later if they annoy me enough. If you know/figure out a fix feel free to send it to me, open a pull request or fork the repo so that others can use it too.
-
-### Post-processing shader
-
-- Highlights aren't always clean
-- Highlights sometimes leak outside objects
-
-![alt text](https://i.imgur.com/q5NK8xj.png)
-
-### Object shader
-
-- Highlights aren't always clean
-
 ## Notes
 
 - Orthographic camera has some quirks that are non-specific to the shader:
