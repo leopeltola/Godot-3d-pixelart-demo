@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://djc2wirwhg3g"]
+[gd_scene load_steps=17 format=3 uid="uid://djc2wirwhg3g"]
 
 [ext_resource type="PackedScene" uid="uid://cuh1yaoty6gvf" path="res://camera.tscn" id="1_nnx1f"]
 [ext_resource type="Shader" path="res://pixelart_stylizer.gdshader" id="2_w500p"]
@@ -40,6 +40,9 @@ grow_amount = 0.359
 
 [sub_resource type="BoxMesh" id="BoxMesh_sfxtu"]
 size = Vector3(10, 1, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f038i"]
+albedo_color = Color(0.482353, 0.470588, 0.47451, 1)
 
 [sub_resource type="Environment" id="Environment_t4b23"]
 background_mode = 1
@@ -140,6 +143,7 @@ _data = {
 
 [node name="Camera" parent="." instance=ExtResource("1_nnx1f")]
 transform = Transform3D(1, 0, 0, 0, 0.878284, 0.47814, 0, -0.47814, 0.878284, -2.38419e-07, 2.76679, 4.03603)
+post_processing = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.687757, -0.308438, -0.657158, 0.482257, -0.482504, 0.731176, -0.542604, -0.81979, -0.183099, 0, 2.58754, 0)
@@ -149,13 +153,12 @@ directional_shadow_split_1 = 0.032
 directional_shadow_split_3 = 0.54
 
 [node name="ObjectShadedCube" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.953853, 0, 0.300273, 0, 1, 0, -0.300273, 0, 0.953853, 3.02932, -0.433242, -2.41707)
-visible = false
+transform = Transform3D(0.818019, 0, -0.575191, 0, 1, 0, 0.575191, 0, 0.818019, 3.02932, 1.08517, -2.41707)
 mesh = SubResource("BoxMesh_gg7it")
 surface_material_override/0 = SubResource("StandardMaterial3D_l7ldl")
 
 [node name="Cube" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.907066, 0, -0.420988, 0, 1, 0, 0.420988, 0, 0.907066, 0, 0, 0)
+transform = Transform3D(-0.34038, 0, 0.940288, 0, 1, 0, -0.940288, 0, -0.34038, 0, 0, 0.0105325)
 mesh = SubResource("BoxMesh_gg7it")
 surface_material_override/0 = SubResource("StandardMaterial3D_r0a1b")
 
@@ -167,6 +170,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_lr1hu")
 [node name="Floor" type="MeshInstance3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, -2.98063, 0)
 mesh = SubResource("BoxMesh_sfxtu")
+surface_material_override/0 = SubResource("StandardMaterial3D_f038i")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_t4b23")
