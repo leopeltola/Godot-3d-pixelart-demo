@@ -5,8 +5,9 @@ This demo shows a basic setup for using the 3D pixel art outline/highlight shade
 Note that the shaders only work as intended when using a **low game resolution**. If you want to have a higher resolution UI you should render the "game" part inside a sub-viewport and apply the texture to a sprite. If you want to pixelize a high-resolution render you'll have to use something else, though this shader could be combined with a pixelization shader. 
 
 ![alt text](https://i.imgur.com/2h5ovsW.png)
+Before and after. Shader in screenshot is a previous iteration, current one is cleaner.
 
-Inspired by [this by Kody King](https://threejs.org/examples/webgl_postprocessing_pixel.html).
+Inspired by [this shader Kody King](https://threejs.org/examples/webgl_postprocessing_pixel.html).
 
 **There are two shaders:**
 1. Post-processing shader that affects everything on the screen
