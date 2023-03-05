@@ -143,7 +143,6 @@ _data = {
 
 [node name="Camera" parent="." instance=ExtResource("1_nnx1f")]
 transform = Transform3D(1, 0, 0, 0, 0.878284, 0.47814, 0, -0.47814, 0.878284, -2.38419e-07, 2.76679, 4.03603)
-post_processing = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.687757, -0.308438, -0.657158, 0.482257, -0.482504, 0.731176, -0.542604, -0.81979, -0.183099, 0, 2.58754, 0)

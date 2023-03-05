@@ -31,12 +31,14 @@ I might try fixing these later if they annoy me enough. If you know/figure out a
 
 ## Notes
 
-- Orthographic camera has some caveats that are non-specific to the shader:
-    - SDFGI not supported, [Github issue](https://github.com/godotengine/godot/issues/70944)
+- Orthographic camera has some quirks that are non-specific to the shader:
+    - SDFGI & VocelGI not supported [(Github issue)](https://github.com/godotengine/godot/issues/70944)
     - DirectionalLight3D shadows behave weird. To fix configure either your Camera's `Far` property or your DirectionalLight3D's `Split 1` property.
+- Special thanks to [oJadeo](https://github.com/oJadeo) for informing me about Godot 4's normal buffer :)
 
 ## License
 
 MIT, you can use & modify it however you like. 
+
 
 If you use the effect in a game I'd love to see it!
