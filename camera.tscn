@@ -1,14 +1,14 @@
 [gd_scene load_steps=5 format=3 uid="uid://cuh1yaoty6gvf"]
 
-[ext_resource type="Shader" path="res://pixelart_stylizer_postprocess.gdshader" id="1_f284h"]
 [ext_resource type="Script" path="res://camera.gd" id="1_rd5nv"]
+[ext_resource type="Shader" path="res://pixelart_stylizer.gdshader" id="2_t571y"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_57txa"]
 size = Vector2(10, 10)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hpojt"]
 render_priority = 0
-shader = ExtResource("1_f284h")
+shader = ExtResource("2_t571y")
 shader_parameter/shadows_enabled = true
 shader_parameter/highlights_enabled = true
 shader_parameter/shadow_strength = 0.4

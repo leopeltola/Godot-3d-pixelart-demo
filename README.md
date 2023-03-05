@@ -9,9 +9,7 @@ Before and after. Shader in screenshot is a previous iteration, current one is c
 
 Inspired by [this shader Kody King](https://threejs.org/examples/webgl_postprocessing_pixel.html).
 
-**There are two shaders:**
-1. Post-processing shader that affects everything on the screen
-2. Object-specific shader. This is best used as second pass on top of a base material - see demo
+**The shader can be used as both a post-processing and object shader.**
 
 ## Notes
 
